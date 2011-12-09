@@ -3,9 +3,14 @@ import tuio.*;
 SurfaceObjectList objectList;
 StateMachine sm;
 TuioClient client;
-int tempo = 120;
+int tempo = 180;
 int bars = 8;
 int beat_per_bar = 4;
+Counter completion = new Counter();
+
+class Counter {
+  int value;
+}
 
 UDPOutput clientParameters = new UDPOutput("127.0.0.1", 3001, 3003);
 UDPOutput clientSoundOnOff = new UDPOutput("127.0.0.1", 3002, 3004);
@@ -20,8 +25,9 @@ void setup()
   redraw();
   objectList = new SurfaceObjectList();
   client  = new TuioClient(this);
-  sm = new StateMachine(tempo, bars, beat_per_bar, objectList);
+  sm = new StateMachine(tempo, bars, beat_per_bar, objectList, completion, width, height);
   sm.start();
+    frameRate(30);
 }
 
 void stop() {
@@ -34,6 +40,10 @@ void draw()
 {
   background(255);
   objectList.draw();
+  color c1 = color(50, 50, 50);
+  fill(c1);
+  //println("value : " + completion.value / 100. * width);
+  rect(0,0,completion.value / 100. * width * 2, 100);
 }
 
 // called after each message bundle
